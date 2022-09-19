@@ -7,16 +7,25 @@ import uuid
 class Genre(models.Model):
     name = models.CharField('Pavadinimas', max_length=200, help_text='Iveskite knygos zanra')
 
+    class Meta:
+        verbose_name = 'Zanras'
+        verbose_name_plural = 'Zanrai'
+
     def __str__(self):
         return self.name
 
 
 class Book(models.Model):
     title = models.CharField('Pavadinimas', max_length=200)
-    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name='books')
     summary = models.TextField('Aprasymas', max_length=1000, help_text='Trumpas knygos aprasymas')
     isbn = models.CharField('ISBN', max_length=13)
     genre = models.ManyToManyField(Genre, help_text='Isrinkite zanra')
+
+    def display_genre(self):
+        return ', '.join(genre.name for genre in self.genre.all()[:3])
+
+    display_genre.short_description = 'Zanras'
 
     def __str__(self):
         return self.title
@@ -34,6 +43,11 @@ class Author(models.Model):
 
     def get_absolute_url(self):
         return reverse('author-detail', args=[str(self.id)])
+
+    def display_books(self):
+        return ', '.join(book.title for book in self.books.all()[:3])
+
+    display_books.short_description = "Knygos"
 
     def __str__(self):
         return f'{self.last_name} {self.first_name}'
