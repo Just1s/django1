@@ -2,9 +2,9 @@
 {% block content %}
 <div class="container author" xmlns="http://www.w3.org/1999/html">
   <h4>{{author.first_name}} {{author.last_name}}</h4>
-  <hr/>
+  <hr>
   <p>{{author.description}}</p>
-  <hr/>
+  <hr>
   <br>
   <h5>Mes turime šias {{author.first_name}} {{author.last_name}} knygas:</h5>
   {% for i in author.books.all %}
