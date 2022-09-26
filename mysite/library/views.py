@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Book, BookInstance, Author, Genre
 from django.views import generic
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 # Create your views here.
@@ -45,3 +46,10 @@ class BookListView(generic.ListView):
 class BookDetailView(generic.DetailView):
     model = Book
     template_name = 'book_detail.html'
+
+
+def search(request):
+    query_text = request.GET.get('query')
+    search_results = Book.objects.filter(Q(title__icontains=query_text) | Q(summary__icontains=query_text)
+                                         | Q(isbn__icontains=query_text))
+    return render(request, 'search.html', {'books': search_results, 'querytxt': query_text})
