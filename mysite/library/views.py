@@ -1,9 +1,12 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Book, BookInstance, Author, Genre
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Book, BookInstance, Author
 from django.views import generic
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import User
+from django.views.decorators.csrf import csrf_protect
+from django.contrib import messages
 
 
 # Create your views here.
@@ -67,3 +70,28 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return BookInstance.objects.filter(reader=self.request.user).filter(status__exact='p').order_by('due_back')
+
+
+@csrf_protect
+def register(request):
+    if request.method == 'POST':
+        # imam laukus is formos
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        password2 = request.POST['password2']
+        if password2 == password:
+            if User.objects.filter(username=username).exists():
+                messages.error(request, f'Vartotojo vardas {username} užimtas!')
+                return redirect('register')
+            else:
+                if User.objects.filter(email=email).exists():
+                    messages.error(request, f'El. paštas {email} užimtas!')
+                    return redirect('register')
+                else:
+                    User.objects.create_user(username=username, email=email, password=password)
+                    messages.success(request, f'Vartotojas {username} sukurtas!')
+        else:
+            messages.error(request, 'Slaptažodžiai nesutampa!')
+            return redirect('register')
+    return render(request, 'register.html')
