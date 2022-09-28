@@ -3,6 +3,7 @@ from .models import Book, BookInstance, Author, Genre
 from django.views import generic
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Create your views here.
@@ -57,3 +58,12 @@ def search(request):
     search_results = Book.objects.filter(Q(title__icontains=query_text) | Q(summary__icontains=query_text)
                                          | Q(isbn__icontains=query_text))
     return render(request, 'search.html', {'books': search_results, 'querytxt': query_text})
+
+
+class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
+    model = BookInstance  # konteksto kint i sablona bookinstance_list
+    template_name = 'user_books.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(reader=self.request.user).filter(status__exact='p').order_by('due_back')

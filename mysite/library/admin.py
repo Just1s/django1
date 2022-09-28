@@ -10,8 +10,8 @@ class AuthorAdmin(admin.ModelAdmin):
 
 class BookInstanceInline(admin.TabularInline):
     model = BookInstance
-    readonly_fields = ('id',)
-    can_delete = False
+    # readonly_fields = ('id',)
+    # can_delete = False
     extra = 0
 
 
@@ -21,14 +21,14 @@ class BookAdmin(admin.ModelAdmin):
 
 
 class BookInstanceAdmin(admin.ModelAdmin):
-    list_display = ('book', 'status', 'due_back')
+    list_display = ('book', 'status', 'reader', 'due_back')
     list_editable = ('due_back', 'status')
     list_filter = ('status', 'due_back')
     search_fields = ('id', 'book__title')
 
     fieldsets = (
         ('General', {'fields': ('id', 'book')}),
-        ('Availability', {'fields': ('status', 'due_back')})
+        ('Availability', {'fields': ('status', 'due_back', 'reader')})
     )
 
 
