@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from .forms import BookReviewForm
 from django.views.generic.edit import FormMixin
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -118,3 +119,8 @@ def register(request):
             messages.error(request, 'Slaptažodžiai nesutampa!')
             return redirect('register')
     return render(request, 'register.html')
+
+
+@login_required
+def profilis(request):
+    return render(request, 'profilis.html')
