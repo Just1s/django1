@@ -2,7 +2,7 @@
 {% block content %}
 
 <h1>Mano paimtos knygos</h1>
-
+<img class="rounded-circle" src="{{user.profilis.nuotrauka.url}}">
 {% if bookinstance_list %}
   <ul>
     {% for bookinst in bookinstance_list %}
@@ -15,5 +15,4 @@
 {% else %}
   <p>Šiuo metu iš mūsų nesate paėmęs knygų.</p>
 {% endif %}
-
 {% endblock %}

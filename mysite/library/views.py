@@ -7,9 +7,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from .forms import BookReviewForm
+from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm
 from django.views.generic.edit import FormMixin
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext as _
 
 
 # Create your views here.
@@ -106,21 +107,37 @@ def register(request):
         password2 = request.POST['password2']
         if password2 == password:
             if User.objects.filter(username=username).exists():
-                messages.error(request, f'Vartotojo vardas {username} užimtas!')
+                messages.error(request, _('Username %s already exist!') % username)
                 return redirect('register')
             else:
                 if User.objects.filter(email=email).exists():
-                    messages.error(request, f'El. paštas {email} užimtas!')
+                    messages.error(request, _('Email %s already exist!') % email)
                     return redirect('register')
                 else:
                     User.objects.create_user(username=username, email=email, password=password)
-                    messages.success(request, f'Vartotojas {username} sukurtas!')
+                    messages.success(request, _('User %s created!') % username)
         else:
-            messages.error(request, 'Slaptažodžiai nesutampa!')
+            messages.error(request, _('Passwords do not match!'))
             return redirect('register')
     return render(request, 'register.html')
 
 
 @login_required
 def profilis(request):
-    return render(request, 'profilis.html')
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfilisUpdateForm(request.POST, request.FILES, instance=request.user.profilis)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, 'Profilis atnaujintas')
+            return redirect('profilis')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfilisUpdateForm(instance=request.user.profilis)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
+    return render(request, 'profilis.html', context)

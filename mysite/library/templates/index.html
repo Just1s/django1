@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block content %}
-<h1>Rajono biblioteka</h1>
-<p>Sveiki atvyke i Knygu roju!</p>
-<p>Siuo metu turime:</p>
+<h1>{% trans "Local library" %}</h1>
+<p>{% trans "Welcome to  Book Paradise!" %}</p>
+<p>{% trans "At the moment we have:" %}</p>
 <ul>
-    <li><strong>Knygu: {{num_books}}</strong></li>
-    <li><strong>Kopiju: {{num_instances}}</strong></li>
-    <li><strong>Laisvu kopiju: {{num_instances_available}}</strong></li>
-    <li><strong>Autoriu: {{num_authors}}</strong></li>
+    <li><strong>{% trans "Books" %}: {{num_books}}</strong></li>
+    <li><strong>{% trans "Instances" %}: {{num_instances}}</strong></li>
+    <li><strong>{% trans "Available instances" %}: {{num_instances_available}}</strong></li>
+    <li><strong>{% trans "Authors" %}: {{num_authors}}</strong></li>
 </ul>
-<p>Čia jūs lankotės {{num_visits}} kartą.</p>
+<p>{% trans "Number of your visits:" %} {{num_visits}}.</p>
 {% endblock %}
