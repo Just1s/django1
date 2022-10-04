@@ -10,5 +10,10 @@ urlpatterns = [
     path('search/', views.search, name='search_link'),
     path('mybooks/', views.LoanedBooksByUserListView.as_view(), name='my-borrowed'),
     path('register/', views.register, name='register'),
-    path('profilis/', views.profilis, name='profilis')
+    path('profilis/', views.profilis, name='profilis'),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('mybooks/<uuid:pk>', views.BookByUserDetailView.as_view(), name='my-book'),
+    path('mybooks/new', views.BookByUserCreateView.as_view(), name='my-borrowed-new'),
+    path('mybooks/<uuid:pk>/update', views.BookByUserUpdateView.as_view(), name='my-book-update'),
+    path('mybooks/<uuid:pk>/delete', views.BookByUserDeleteView.as_view(), name='my-book-delete'),
 ]
